@@ -8,6 +8,13 @@
 [![XGBoost](https://img.shields.io/badge/XGBoost-1.7+-orange.svg)](https://xgboost.readthedocs.io)
 [![SHAP](https://img.shields.io/badge/SHAP-0.42+-green.svg)](https://shap.readthedocs.io)
 
+## 🔗 Links de Entrega
+
+| | Link |
+|---|---|
+| **Repositório GitHub** | https://github.com/lgustavobarre351/GLOBAL_SOLUTION_GENERATIVE_AI |
+| **Aplicação em funcionamento** | https://globalsolutiongenerativeai-gkw5rmitemjc8d7ue7mvub.streamlit.app |
+
 ---
 
 ## 🎯 Contexto do Problema
@@ -206,7 +213,7 @@ gaie_helios/
 
 ## 🔗 Links
 
-- **Aplicação em funcionamento**: `streamlit run 5_app_streamlit.py`
+- **Aplicação em funcionamento**: [GAIE — Previsão de Tempestades Geomagnéticas · Streamlit](https://globalsolutiongenerativeai-gkw5rmitemjc8d7ue7mvub.streamlit.app/)
 - **Plataforma HELIOS**: [https://helius-zeta.vercel.app/](https://helius-zeta.vercel.app/)
 - **NASA DONKI API**: [https://ccmc.gsfc.nasa.gov/tools/DONKI/](https://ccmc.gsfc.nasa.gov/tools/DONKI/)
 - **NOAA SWPC**: [https://www.swpc.noaa.gov/](https://www.swpc.noaa.gov/)
