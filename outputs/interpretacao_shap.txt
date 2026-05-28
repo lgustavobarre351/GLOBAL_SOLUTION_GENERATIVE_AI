@@ -1,0 +1,89 @@
+======================================================================
+GAIE -- Relatorio de Interpretabilidade SHAP
+Analise Fisica das Variaveis Mais Influentes
+======================================================================
+
+Modelo de Regressao: XGBoost
+Modelo de Classificacao: XGBoost
+
+----------------------------------------------------------------------
+TOP 8 FEATURES -- REGRESSAO (KP Index)
+----------------------------------------------------------------------
+
+1. NEWELL_COUPLING (SHAP medio: 2.1710)
+   Acoplamento de Newell (2008): e = v^(4/3) * Bs^(2/3). Taxa de transferência de energia para a magnetosfera.
+
+2. VELOCIDADE_VENTO (SHAP medio: 0.2608)
+   Velocidade do vento solar. Maior velocidade = mais pressão cinética = mais compressão magnetosférica.
+
+3. BZ_NEGATIVO (SHAP medio: 0.2356)
+   Bz Sul — max(-Bz,0). Quantifica diretamente o potencial de reconexão magnética.
+
+4. HORA_COS (SHAP medio: 0.1938)
+   Cosseno da hora. Completude da representação cíclica horária.
+
+5. FLARE_CLASSE (SHAP medio: 0.1318)
+   Classe do flare (B/C/M/X). Flares X acompanham partículas energéticas (SEP) e radiação intensa.
+
+6. BZ (SHAP medio: 0.1237)
+   Campo Bz — componente sul do IMF. Valores negativos causam reconexão magnética na magnetopausa.
+
+7. CAMPO_BT (SHAP medio: 0.0969)
+   Campo magnético total. Indica intensidade geral do IMF. Correlacionado com profundidade do índice Dst.
+
+8. TEMPERATURA (SHAP medio: 0.0826)
+   Temperatura do vento solar (eV). Indicador indireto da termalização do plasma.
+
+----------------------------------------------------------------------
+TOP 8 FEATURES -- CLASSIFICACAO (Nivel G)
+----------------------------------------------------------------------
+
+1. NEWELL_COUPLING (SHAP medio: 1.0922)
+   Acoplamento de Newell (2008): e = v^(4/3) * Bs^(2/3). Taxa de transferência de energia para a magnetosfera.
+
+2. BZ_NEGATIVO (SHAP medio: 0.4322)
+   Bz Sul — max(-Bz,0). Quantifica diretamente o potencial de reconexão magnética.
+
+3. FLARE_CLASSE (SHAP medio: 0.4259)
+   Classe do flare (B/C/M/X). Flares X acompanham partículas energéticas (SEP) e radiação intensa.
+
+4. CAMPO_BT (SHAP medio: 0.2843)
+   Campo magnético total. Indica intensidade geral do IMF. Correlacionado com profundidade do índice Dst.
+
+5. VELOCIDADE_VENTO (SHAP medio: 0.2798)
+   Velocidade do vento solar. Maior velocidade = mais pressão cinética = mais compressão magnetosférica.
+
+6. CME_BZ_INTERACAO (SHAP medio: 0.2470)
+   CME × Bz sul. Captura a condição mais geoefetiva: CME com campo sul intenso.
+
+7. BZ (SHAP medio: 0.2018)
+   Campo Bz — componente sul do IMF. Valores negativos causam reconexão magnética na magnetopausa.
+
+8. PRESSAO_DINAMICA (SHAP medio: 0.1948)
+   Pressão dinâmica P=rv^2/2. Comprime a magnetosfera e reduz o raio de Alfvén.
+
+----------------------------------------------------------------------
+CONCLUSOES FISICAS
+----------------------------------------------------------------------
+
+1. O CAMPO Bz e o driver mais critico. Bz < -10 nT quase sempre antecede G2+.
+   Reconexao magnetica na magnetopausa diurna injeta particulas no anel de corrente.
+
+2. O ACOPLAMENTO DE NEWELL integra velocidade e Bz de forma nao-linear (v^4/3 x Bs^2/3),
+   capturando a eficiencia de transferencia de energia melhor que as variaveis isoladas.
+
+3. EVENTOS CME adicionam 1-2 pontos ao KP. CMEs rapidas com Bz negativo
+   sao a causa dominante de tempestades G3-G5 historicas (ex: Quebec 1989).
+
+4. A PRESSAO DINAMICA (rho x v^2) e DENSIDADE amplificam o efeito do Bz,
+   comprimindo a magnetosfera e reduzindo o raio de standoff.
+
+5. As JANELAS TEMPORAIS (3h e 6h) confirmam que Bz negativo persistente
+   amplifica os efeitos de uma tempestade em andamento.
+
+Referencias:
+  Newell et al. (2008), JGR, doi:10.1029/2007JA012825
+  Borovsky & Denton (2006), JGR, doi:10.1029/2005JA011447
+  Richardson & Cane (2012), JGR, doi:10.1029/2011JA017364
+
+======================================================================
