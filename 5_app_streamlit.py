@@ -634,29 +634,37 @@ streamlit run 5_app_streamlit.py
 """, unsafe_allow_html=True)
 
         with col_team:
-            logo_html = f'<img src="data:image/png;base64,{LOGO_B64}" style="width:100px;display:block;margin:0 auto 20px auto;">' if LOGO_B64 else '<div style="font-size:4rem;text-align:center;margin-bottom:20px;">🌌</div>'
-            membros_html = "".join([f"""
-            <div class="member-row">
-              <span class="member-name">{nome}</span>
-              <span class="member-rm">{rm}</span>
-            </div>""" for nome, rm in EQUIPE])
+            # ⚠️  Sem indentação nas strings HTML — 4+ espaços viram bloco de código no Markdown
+            logo_html = (
+                f'<img src="data:image/png;base64,{LOGO_B64}" style="width:90px;display:block;margin:0 auto 18px auto;">'
+                if LOGO_B64 else
+                '<div style="font-size:3.5rem;text-align:center;margin-bottom:18px;">🌌</div>'
+            )
 
-            st.markdown(f"""
-<div style="background:#0e0b09;border:1px solid rgba(232,90,30,0.25);border-radius:8px;padding:24px;">
-  {logo_html}
-  <p style="color:#E85A1E;letter-spacing:0.2em;font-size:0.75rem;font-weight:600;text-align:center;margin-bottom:16px;">/ MISSION CREW · INTEGRANTES</p>
-  {membros_html}
-  <div style="margin-top:16px;border-top:1px solid rgba(232,90,30,0.15);padding-top:14px;">
-    <p style="color:#5A4A3A;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;text-align:center;">FIAP · Global Solution 2026/1</p>
-    <p style="color:#5A4A3A;font-size:0.72rem;letter-spacing:0.12em;text-align:center;">Generative AI for Engineering · Turma 4ESPY</p>
-  </div>
-  <div style="margin-top:14px;text-align:center;">
-    <a href="https://github.com/lgustavobarre351/GLOBAL_SOLUTION_GENERATIVE_AI"
-       style="color:#E85A1E;font-size:0.75rem;letter-spacing:0.08em;" target="_blank">
-       GitHub do Projeto
-    </a>
-  </div>
-</div>""", unsafe_allow_html=True)
+            ROW = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(232,90,30,0.12);'
+            NM  = 'color:#D4C8BC;font-size:0.87rem;'
+            RM  = 'color:#E85A1E;font-size:0.82rem;font-weight:700;font-family:monospace;letter-spacing:0.04em;'
+
+            membros_html = "".join(
+                f'<div style="{ROW}"><span style="{NM}">{nome}</span><span style="{RM}">{rm}</span></div>'
+                for nome, rm in EQUIPE
+            )
+
+            st.markdown(
+                f'<div style="background:#0e0b09;border:1px solid rgba(232,90,30,0.25);border-radius:8px;padding:22px;">'
+                f'{logo_html}'
+                f'<p style="color:#E85A1E;letter-spacing:0.2em;font-size:0.72rem;font-weight:700;text-align:center;margin-bottom:14px;">/ MISSION CREW · INTEGRANTES</p>'
+                f'{membros_html}'
+                f'<div style="margin-top:14px;border-top:1px solid rgba(232,90,30,0.15);padding-top:12px;">'
+                f'<p style="color:#5A4A3A;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;text-align:center;margin:0;">FIAP · Global Solution 2026/1</p>'
+                f'<p style="color:#5A4A3A;font-size:0.7rem;letter-spacing:0.08em;text-align:center;margin:4px 0 0 0;">Generative AI for Engineering · Turma 4ESPY</p>'
+                f'</div>'
+                f'<div style="margin-top:12px;text-align:center;">'
+                f'<a href="https://github.com/lgustavobarre351/GLOBAL_SOLUTION_GENERATIVE_AI" style="color:#E85A1E;font-size:0.74rem;letter-spacing:0.06em;" target="_blank">GitHub do Projeto ↗</a>'
+                f'</div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
 
 if __name__ == "__main__":
     main()
