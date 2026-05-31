@@ -17,6 +17,20 @@
 
 ---
 
+## 👥 Mission Crew — Integrantes
+
+> **FIAP · Global Solution 2026/1 · Generative AI for Engineering · Turma 4ESPY**
+
+| Nome | RM |
+|------|----|
+| Julia Azevedo Lins | RM99690 |
+| Luis Gustavo Barreto Garrido | RM99210 |
+| Victor Hugo Aranda Forte | RM99667 |
+| Guilherme Akio | RM98582 |
+| Felipe Cortez | RM99750 |
+
+---
+
 ## 🎯 Contexto do Problema
 
 Tempestades geomagnéticas são distúrbios no campo magnético da Terra causados pela interação do vento solar com a magnetosfera. Seus impactos são devastadores:
