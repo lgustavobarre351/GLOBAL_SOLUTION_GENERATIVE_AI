@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv
+venv/
+
+# Documentos Word gerados (entregues fora do repo)
+*.docx
+gerar_*.js
+package.json
+package-lock.json
+node_modules/
+
+# Arquivos temporários do Word
+~$*.docx
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
