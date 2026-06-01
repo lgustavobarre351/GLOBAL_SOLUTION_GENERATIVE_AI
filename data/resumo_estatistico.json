@@ -1,0 +1,71 @@
+{
+  "gerado_em": "2026-06-01T19:48:52.770185",
+  "modelo_regressao": "Random Forest",
+  "modelo_classificacao": "Random Forest",
+  "total_registros": 11035,
+  "periodo_inicio": "2026-03-22 05:07:32.150517",
+  "periodo_fim": "2026-05-31 19:04:00",
+  "acuracia_geral": 0.994,
+  "rmse_historico": 0.2119,
+  "kp_medio_previsto": 2.649,
+  "kp_maximo_previsto": 9.0,
+  "distribuicao_nivel_g": {
+    "G0 - Calmo": {
+      "count": 10462,
+      "percentual": 94.8
+    },
+    "G1 - Tempestade Menor": {
+      "count": 74,
+      "percentual": 0.7
+    },
+    "G2 - Tempestade Moderada": {
+      "count": 132,
+      "percentual": 1.2
+    },
+    "G3 - Tempestade Forte": {
+      "count": 106,
+      "percentual": 1.0
+    },
+    "G4 - Tempestade Severa": {
+      "count": 118,
+      "percentual": 1.1
+    },
+    "G5 - Tempestade Extrema": {
+      "count": 143,
+      "percentual": 1.3
+    }
+  },
+  "por_mes": [
+    {
+      "mes_ano": "2026-03",
+      "registros": 235,
+      "kp_medio": 4.365,
+      "kp_max": 8.999,
+      "tempestades_g1plus": 109,
+      "tempestades_g3plus": 63
+    },
+    {
+      "mes_ano": "2026-04",
+      "registros": 720,
+      "kp_medio": 3.849,
+      "kp_max": 9.0,
+      "tempestades_g1plus": 266,
+      "tempestades_g3plus": 177
+    },
+    {
+      "mes_ano": "2026-05",
+      "registros": 10080,
+      "kp_medio": 2.523,
+      "kp_max": 8.995,
+      "tempestades_g1plus": 198,
+      "tempestades_g3plus": 127
+    }
+  ],
+  "endpoints_disponiveis": {
+    "/historico": "Todos os registros com previsões",
+    "/historico/ultimas-24h": "Apenas últimas 24 horas",
+    "/historico/tempestades": "Apenas eventos G1+ (nivel_g_previsto >= 1)",
+    "/historico/resumo": "Estatísticas agregadas",
+    "/previsao": "Previsão em tempo real (recebe parâmetros)"
+  }
+}
