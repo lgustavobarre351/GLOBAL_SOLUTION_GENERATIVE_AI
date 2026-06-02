@@ -9,6 +9,7 @@ import os
 import json
 import base64
 import warnings
+import requests
 import numpy as np
 import pandas as pd
 import joblib
@@ -362,6 +363,148 @@ def grafico_probabilidades(proba: np.ndarray) -> go.Figure:
     )
     return fig
 
+# ── Dados ao vivo (cache 5 minutos) ──────────────────────────────────────────
+
+@st.cache_data(ttl=300)
+def buscar_dados_ao_vivo():
+    """
+    Busca dados reais do vento solar da NOAA SWPC (satélite DSCOVR).
+    Cache de 5 minutos para não sobrecarregar a API.
+    """
+    try:
+        r = requests.get("https://services.swpc.noaa.gov/products/solar-wind/mag-7-day.json", timeout=10)
+        data_mag = r.json()
+        df_mag = pd.DataFrame(data_mag[1:], columns=data_mag[0])
+        df_mag = df_mag.rename(columns={"bz_gsm": "bz", "bt": "campo_bt"})
+        df_mag["timestamp"] = pd.to_datetime(df_mag["time_tag"])
+        df_mag["bz"]        = pd.to_numeric(df_mag["bz"], errors="coerce")
+        df_mag["campo_bt"]  = pd.to_numeric(df_mag["campo_bt"], errors="coerce")
+        df_mag = df_mag[["timestamp", "bz", "campo_bt"]].dropna()
+
+        r2 = requests.get("https://services.swpc.noaa.gov/products/solar-wind/plasma-7-day.json", timeout=10)
+        data_pl = r2.json()
+        df_pl = pd.DataFrame(data_pl[1:], columns=data_pl[0])
+        df_pl = df_pl.rename(columns={"density":"densidade_protons","speed":"velocidade_vento","temperature":"temperatura"})
+        df_pl["timestamp"] = pd.to_datetime(df_pl["time_tag"])
+        for c in ["densidade_protons","velocidade_vento","temperatura"]:
+            df_pl[c] = pd.to_numeric(df_pl[c], errors="coerce")
+        df_pl = df_pl[["timestamp","velocidade_vento","densidade_protons","temperatura"]].dropna()
+
+        r3 = requests.get("https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json", timeout=10)
+        data_kp = r3.json()
+        if isinstance(data_kp[0], dict):
+            df_kp = pd.DataFrame(data_kp).rename(columns={"time_tag":"ts_kp","Kp":"kp_real"})
+        else:
+            df_kp = pd.DataFrame(data_kp[1:], columns=data_kp[0])
+            df_kp.columns = ["ts_kp","kp_real"] + list(df_kp.columns[2:])
+        df_kp["ts_kp"]   = pd.to_datetime(df_kp["ts_kp"])
+        df_kp["kp_real"] = pd.to_numeric(df_kp["kp_real"], errors="coerce")
+        df_kp = df_kp[["ts_kp","kp_real"]].dropna()
+
+        df = pd.merge_asof(df_mag.sort_values("timestamp"), df_pl.sort_values("timestamp"),
+                           on="timestamp", tolerance=pd.Timedelta("2min"), direction="nearest")
+        df = pd.merge_asof(df.sort_values("timestamp"),
+                           df_kp.rename(columns={"ts_kp":"timestamp"}).sort_values("timestamp"),
+                           on="timestamp", direction="backward")
+        df["kp_real"] = df["kp_real"].ffill()
+        df = df.dropna(subset=["bz","velocidade_vento","densidade_protons"])
+
+        mp = 1.6726e-27
+        df["pressao_dinamica"] = np.clip(0.5*mp*df["densidade_protons"]*1e6*(df["velocidade_vento"]*1e3)**2*1e9, 0.4, 45)
+        df["cme"]             = 0
+        df["velocidade_cme"]  = 0.0
+        df["flare_classe"]    = 0
+
+        cutoff = df["timestamp"].max() - pd.Timedelta("24h")
+        df_24h = df[df["timestamp"] >= cutoff].reset_index(drop=True)
+
+        atual = df.iloc[-1]
+        condicoes = {
+            "bz": float(atual["bz"]),
+            "campo_bt": float(atual["campo_bt"]),
+            "velocidade_vento": float(atual["velocidade_vento"]),
+            "densidade_protons": float(atual["densidade_protons"]),
+            "temperatura": float(atual["temperatura"]),
+            "pressao_dinamica": float(atual["pressao_dinamica"]),
+            "cme": 0, "velocidade_cme": 0.0, "flare_classe": 0,
+            "timestamp": str(atual["timestamp"]),
+        }
+        return df_24h, condicoes, df
+    except Exception:
+        return None, None, None
+
+
+def gerar_forecast_ao_vivo(df_real, modelo_reg, modelo_clf, scaler, feature_cols, horas=48):
+    """Previsão para as próximas `horas` horas com decaimento das condições atuais."""
+    ultimas = df_real.tail(360).mean(numeric_only=True)
+    ts_inicio = pd.to_datetime(df_real["timestamp"].max()) + pd.Timedelta("1h")
+    tss = pd.date_range(start=ts_inicio, periods=horas, freq="1h")
+    linhas = []
+    for i, ts in enumerate(tss):
+        dec = np.exp(-i * np.log(2) / 24)
+        bz  = float(ultimas.get("bz", 0)) * dec
+        vel = float(ultimas.get("velocidade_vento", 450)) * dec + 450 * (1-dec)
+        den = float(ultimas.get("densidade_protons", 8)) * dec + 8 * (1-dec)
+        mp  = 1.6726e-27
+        pre = np.clip(0.5*mp*den*1e6*(vel*1e3)**2*1e9, 0.4, 45)
+        bz_neg = max(-bz, 0)
+        newell = (vel**(4/3))*(bz_neg**(2/3)) if bz_neg > 0 else 0.0
+        linhas.append({
+            "timestamp":ts,"velocidade_vento":vel,"bz":bz,"bz_negativo":bz_neg,
+            "densidade_protons":den,"campo_bt":abs(bz)+4,"pressao_dinamica":pre,
+            "temperatura":float(ultimas.get("temperatura",70)),"cme":0.0,
+            "velocidade_cme":0.0,"flare_classe":0.0,"newell_coupling":newell,
+            "cme_bz_interacao":0.0,"hora_sin":np.sin(2*np.pi*ts.hour/24),
+            "hora_cos":np.cos(2*np.pi*ts.hour/24),"mes_sin":np.sin(2*np.pi*ts.month/12),
+            "mes_cos":np.cos(2*np.pi*ts.month/12),"bz_media_3h":bz,
+            "velocidade_media_3h":vel,"bz_media_6h":bz,"velocidade_media_6h":vel,
+        })
+    df_fc = pd.DataFrame(linhas)
+    Xs = scaler.transform(df_fc[feature_cols].values)
+    df_fc["kp_previsto"]      = np.clip(modelo_reg.predict(Xs), 0, 9).round(3)
+    df_fc["nivel_g_previsto"] = [kp_para_nivel_g(k) for k in df_fc["kp_previsto"]]
+    df_fc["incerteza"]        = np.minimum(np.arange(len(df_fc))*0.08+0.08, 2.0)
+    df_fc["kp_min"]           = np.clip(df_fc["kp_previsto"]-df_fc["incerteza"], 0, 9)
+    df_fc["kp_max"]           = np.clip(df_fc["kp_previsto"]+df_fc["incerteza"], 0, 9)
+    return df_fc
+
+
+def grafico_timeline(df_hist, df_fc):
+    """Gráfico histórico (24h real) + forecast (48h) com bandas de incerteza."""
+    fig = go.Figure()
+    cores_zona = ["#0d2b0d","#2b2800","#2b1500","#2b0000","#1e002b","#1a0010"]
+    for i, (y0, y1, nome) in enumerate([(0,5,"G0"),(5,6,"G1"),(6,7,"G2"),(7,8,"G3"),(8,9,"G4"),(9,10,"G5")]):
+        fig.add_hrect(y0=y0, y1=y1, fillcolor=cores_zona[i], opacity=0.4, line_width=0,
+                      annotation_text=nome, annotation_position="right",
+                      annotation_font_color="#555555", annotation_font_size=10)
+    if df_hist is not None and not df_hist.empty and "kp_real" in df_hist.columns:
+        dh = df_hist.dropna(subset=["kp_real"])
+        fig.add_trace(go.Scatter(x=dh["timestamp"], y=dh["kp_real"], name="KP Real (NOAA)",
+                                  mode="lines", line=dict(color="#4fc3f7", width=2),
+                                  hovertemplate="<b>Real</b><br>%{x}<br>KP=%{y:.2f}<extra></extra>"))
+    fig.add_vline(x=df_fc["timestamp"].min()-pd.Timedelta("1h"), line_dash="dot",
+                  line_color="#666666", line_width=1,
+                  annotation_text="AGORA", annotation_font_color="#888888", annotation_font_size=10)
+    fig.add_trace(go.Scatter(
+        x=pd.concat([df_fc["timestamp"], df_fc["timestamp"][::-1]]),
+        y=pd.concat([df_fc["kp_max"], df_fc["kp_min"][::-1]]),
+        fill="toself", fillcolor="rgba(232,90,30,0.12)",
+        line=dict(color="rgba(0,0,0,0)"), name="Incerteza", hoverinfo="skip"))
+    fig.add_trace(go.Scatter(x=df_fc["timestamp"], y=df_fc["kp_previsto"],
+                              name="Forecast GAIE", mode="lines",
+                              line=dict(color="#E85A1E", width=2.5, dash="dash"),
+                              hovertemplate="<b>Forecast</b><br>%{x}<br>KP=%{y:.2f}<extra></extra>"))
+    fig.update_layout(
+        paper_bgcolor="#0b0906", plot_bgcolor="#0b0906", font_color="#D4C8BC",
+        xaxis=dict(color="#5A4A3A", gridcolor="rgba(255,255,255,0.05)", title=""),
+        yaxis=dict(color="#5A4A3A", gridcolor="rgba(255,255,255,0.05)",
+                   title="KP Index", range=[0, 9.5]),
+        legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#A89880"),
+        height=360, margin=dict(l=10, r=60, t=20, b=10),
+    )
+    return fig
+
+
 def tabela_metricas_html(metricas: dict):
     if not metricas:
         st.warning("Execute o pipeline para gerar as métricas.")
@@ -471,12 +614,69 @@ def main():
     proba    = modelo_clf.predict_proba(X_scaled)[0] if hasattr(modelo_clf, "predict_proba") else np.zeros(6)
 
     # ── ABAS ────────────────────────────────────────────────────────
-    tab_prev, tab_shap, tab_met, tab_sobre = st.tabs([
-        "⚡  Previsão em Tempo Real",
+    tab_vivo, tab_prev, tab_shap, tab_met, tab_sobre = st.tabs([
+        "🌍  Monitoramento Ao Vivo",
+        "⚡  Simulação Manual",
         "🔍  Interpretabilidade SHAP",
         "📊  Métricas dos Modelos",
         "🛸  Sobre o GAIE",
     ])
+
+    # ════════════ ABA 0 — AO VIVO ════════════
+    with tab_vivo:
+        st.markdown('<p style="color:#E85A1E;letter-spacing:0.15em;font-size:0.8rem;font-weight:600;">MONITORAMENTO EM TEMPO REAL — SATÉLITE DSCOVR (NOAA SWPC)</p>', unsafe_allow_html=True)
+        st.caption("Dados reais do vento solar atualizados automaticamente a cada 5 minutos. Forecast gerado pelo modelo GAIE para as próximas 48 horas.")
+
+        with st.spinner("Buscando dados reais do satélite DSCOVR..."):
+            df_24h, condicoes_atuais, df_full = buscar_dados_ao_vivo()
+
+        if df_full is None:
+            st.error("Não foi possível conectar à NOAA SWPC. Verifique sua conexão.")
+        else:
+            # Previsão para as condições atuais
+            hora_agora = pd.to_datetime(condicoes_atuais["timestamp"]).hour
+            mes_agora  = pd.to_datetime(condicoes_atuais["timestamp"]).month
+            inputs_atuais = {**condicoes_atuais, "hora": hora_agora, "mes": mes_agora,
+                             "bz_media_3h": condicoes_atuais["bz"], "vel_media_3h": condicoes_atuais["velocidade_vento"]}
+            X_atual  = engenharia_features_usuario(inputs_atuais, feature_cols)
+            X_atual_s = scaler.transform(X_atual)
+            kp_atual = float(np.clip(modelo_reg.predict(X_atual_s)[0], 0, 9))
+            g_atual  = int(modelo_clf.predict(X_atual_s)[0])
+            g_atual_info = G_INFO.get(g_atual, G_INFO[0])
+
+            # Forecast 48h
+            df_fc = gerar_forecast_ao_vivo(df_full, modelo_reg, modelo_clf, scaler, feature_cols, horas=48)
+
+            # ── Métricas no topo ──────────────────────────────────────
+            c1, c2, c3, c4, c5 = st.columns(5)
+            c1.metric("KP Agora",       f"{kp_atual:.2f}",   f"{kp_atual-5:.2f} vs G1")
+            c2.metric("Nível Atual",    g_atual_info["label"].split("—")[0].strip())
+            c3.metric("Bz Atual",       f"{condicoes_atuais['bz']:.1f} nT")
+            c4.metric("Velocidade",     f"{condicoes_atuais['velocidade_vento']:.0f} km/s")
+            c5.metric("KP Máx 48h",    f"{df_fc['kp_previsto'].max():.2f}",
+                       G_INFO[int(df_fc['nivel_g_previsto'].max())]['label'].split("—")[0].strip())
+
+            # ── Badge do nível atual ──────────────────────────────────
+            nivel_classe = g_atual_info["classe"]
+            st.markdown(f"""
+            <div style="margin:8px 0;">
+              <span class="badge {nivel_classe}">{g_atual_info['emoji']} {g_atual_info['label']}</span>
+              <span style="color:#A89880;font-size:0.82rem;margin-left:12px;">{g_atual_info['desc']}</span>
+            </div>""", unsafe_allow_html=True)
+
+            # ── Gráfico principal ─────────────────────────────────────
+            st.markdown('<p style="color:#A89880;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;margin-top:16px;">KP Index — Últimas 24h (real) + Próximas 48h (forecast GAIE)</p>', unsafe_allow_html=True)
+            st.plotly_chart(grafico_timeline(df_24h, df_fc), use_container_width=True)
+
+            # ── Tabela do forecast ────────────────────────────────────
+            st.markdown('<p style="color:#A89880;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;margin-top:8px;">Previsão Horária — Próximas 24 Horas</p>', unsafe_allow_html=True)
+            df_tabela = df_fc.head(24)[["timestamp","kp_previsto","kp_min","kp_max","nivel_g_label"]].copy()
+            df_tabela.columns = ["Horário","KP Previsto","KP Mínimo","KP Máximo","Nível G"]
+            df_tabela["Horário"] = df_tabela["Horário"].astype(str).str[:16]
+            st.dataframe(df_tabela, use_container_width=True, hide_index=True)
+
+            ts_str = pd.to_datetime(condicoes_atuais["timestamp"]).strftime("%d/%m/%Y %H:%M UTC")
+            st.caption(f"Última atualização: {ts_str} · Fonte: NOAA SWPC — Satélite DSCOVR (Ponto L1) · Cache: 5 minutos")
 
     # ════════════ ABA 1 — PREVISÃO ════════════
     with tab_prev:
