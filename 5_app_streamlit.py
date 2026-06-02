@@ -232,7 +232,7 @@ def carregar_modelos():
     scaler       = joblib.load(p("models/scaler.pkl"))
     feature_cols = joblib.load(p("data/feature_cols.pkl"))
     metricas = {}
-    path_m = p("outputs/metricas.json")
+    path_m = p("outputs/modelos/metricas.json")
     if os.path.exists(path_m):
         with open(path_m, encoding="utf-8") as f:
             metricas = json.load(f)
@@ -744,12 +744,12 @@ def main():
         st.caption("SHAP (SHapley Additive exPlanations) quantifica a contribuição de cada variável para cada previsão individual.")
         base = os.path.dirname(__file__)
         plots = {
-            "Summary Plot — Regressão (KP Index)":    "shap_plots/summary_regressao.png",
-            "Summary Plot — Classificação (Nível G)": "shap_plots/summary_classificacao.png",
-            "Importância Média — Regressão":           "shap_plots/bar_regressao.png",
-            "Importância Média — Classificação":       "shap_plots/bar_classificacao.png",
-            "Dependence Plot — Campo Bz":              "shap_plots/dependence_bz_regressao.png",
-            "Waterfall — Caso Extremo":                "shap_plots/waterfall_extremo_regressao.png",
+            "Summary Plot — Regressão (KP Index)":    "outputs/shap/summary_regressao.png",
+            "Summary Plot — Classificação (Nível G)": "outputs/shap/summary_classificacao.png",
+            "Importância Média — Regressão":           "outputs/shap/bar_regressao.png",
+            "Importância Média — Classificação":       "outputs/shap/bar_classificacao.png",
+            "Dependence Plot — Campo Bz":              "outputs/shap/dependence_bz_regressao.png",
+            "Waterfall — Caso Extremo":                "outputs/shap/waterfall_extremo_regressao.png",
         }
         c1, c2 = st.columns(2)
         cols = [c1, c2]
@@ -762,7 +762,7 @@ def main():
                 else:
                     st.info("Execute `python 4_shap_interpretabilidade.py`")
         st.markdown("---")
-        path_rel = os.path.join(base, "outputs/interpretacao_shap.txt")
+        path_rel = os.path.join(base, "outputs/shap/interpretacao_shap.txt")
         if os.path.exists(path_rel):
             st.markdown('<p style="color:#E85A1E;letter-spacing:0.15em;font-size:0.8rem;font-weight:600;">INTERPRETAÇÃO FÍSICA DAS VARIÁVEIS</p>', unsafe_allow_html=True)
             with open(path_rel, encoding="utf-8") as f:
@@ -776,14 +776,14 @@ def main():
         base = os.path.dirname(__file__)
         cr, cc = st.columns(2)
         with cr:
-            p = os.path.join(base, "outputs/comparacao_regressao.png")
+            p = os.path.join(base, "outputs/modelos/comparacao_regressao.png")
             if os.path.exists(p):
                 st.image(p, use_container_width=True)
         with cc:
-            p = os.path.join(base, "outputs/comparacao_classificacao.png")
+            p = os.path.join(base, "outputs/modelos/comparacao_classificacao.png")
             if os.path.exists(p):
                 st.image(p, use_container_width=True)
-        p_eda = os.path.join(base, "outputs/eda_solar.png")
+        p_eda = os.path.join(base, "outputs/eda/eda_solar.png")
         if os.path.exists(p_eda):
             st.markdown("---")
             st.markdown('<p style="color:#A89880;letter-spacing:0.12em;font-size:0.75rem;text-transform:uppercase;">Análise Exploratória de Dados (EDA)</p>', unsafe_allow_html=True)

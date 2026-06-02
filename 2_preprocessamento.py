@@ -213,7 +213,7 @@ def gerar_eda(df: pd.DataFrame, path_saida: str):
 def main():
     os.makedirs("data", exist_ok=True)
     os.makedirs("models", exist_ok=True)
-    os.makedirs("outputs", exist_ok=True)
+    os.makedirs(os.path.join("outputs", "eda"), exist_ok=True)
 
     print("\n" + "=" * 60)
     print("  GAIE — Script 2: Pré-processamento e Engenharia de Atributos")
@@ -240,7 +240,7 @@ def main():
 
     # EDA
     print("\n[4/5] Gerando análise exploratória (EDA)...")
-    gerar_eda(df, os.path.join("outputs", "eda_solar.png"))
+    gerar_eda(df, os.path.join("outputs", "eda", "eda_solar.png"))
 
     # Verificar que todas as feature cols existem
     faltando = [c for c in FEATURE_COLS if c not in df.columns]

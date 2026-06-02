@@ -160,7 +160,7 @@ def plotar_comparacao_classificacao(resultados: list, path_saida: str):
 
 def main():
     os.makedirs("models", exist_ok=True)
-    os.makedirs("outputs", exist_ok=True)
+    os.makedirs(os.path.join("outputs", "modelos"), exist_ok=True)
 
     print("\n" + "=" * 60)
     print("  GAIE — Script 3: Treinamento e Comparação de Modelos")
@@ -269,11 +269,11 @@ def main():
         "melhor_regressao": melhor_reg_nome,
         "melhor_classificacao": melhor_clf_nome,
     }
-    with open(os.path.join("outputs", "metricas.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join("outputs", "modelos", "metricas.json"), "w", encoding="utf-8") as f:
         json.dump(metricas_finais, f, ensure_ascii=False, indent=2)
 
-    plotar_comparacao_regressao(resultados_reg, os.path.join("outputs", "comparacao_regressao.png"))
-    plotar_comparacao_classificacao(resultados_clf, os.path.join("outputs", "comparacao_classificacao.png"))
+    plotar_comparacao_regressao(resultados_reg, os.path.join("outputs", "modelos", "comparacao_regressao.png"))
+    plotar_comparacao_classificacao(resultados_clf, os.path.join("outputs", "modelos", "comparacao_classificacao.png"))
 
     print("\n" + "=" * 60)
     print("  Resumo de Resultados:")

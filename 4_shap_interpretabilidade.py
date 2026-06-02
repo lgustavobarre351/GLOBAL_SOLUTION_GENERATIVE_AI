@@ -117,7 +117,7 @@ def gerar_shap_regressao(artefatos: dict):
     fig.patch.set_facecolor(FUNDO)
     plt.title("SHAP — Impacto das Features no KP Index (Regressão)",
               color=TEXTO, fontsize=12, pad=15)
-    salvar_fig(fig, os.path.join("shap_plots", "summary_regressao.png"))
+    salvar_fig(fig, os.path.join("outputs", "shap", "summary_regressao.png"))
 
     # ── 2. Bar Plot ─────────────────────────────────────────────────────────
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -128,7 +128,7 @@ def gerar_shap_regressao(artefatos: dict):
     fig.patch.set_facecolor(FUNDO)
     plt.title("SHAP — Importância Média Absoluta das Features (Regressão)",
               color=TEXTO, fontsize=12, pad=15)
-    salvar_fig(fig, os.path.join("shap_plots", "bar_regressao.png"))
+    salvar_fig(fig, os.path.join("outputs", "shap", "bar_regressao.png"))
 
     # ── 3. Dependence Plot — Campo Bz ───────────────────────────────────────
     fig, ax = plt.subplots(figsize=(9, 6))
@@ -149,7 +149,7 @@ def gerar_shap_regressao(artefatos: dict):
     ax.tick_params(colors=SUBTXT)
     for spine in ax.spines.values():
         spine.set_edgecolor("#30363d")
-    salvar_fig(fig, os.path.join("shap_plots", "dependence_bz_regressao.png"))
+    salvar_fig(fig, os.path.join("outputs", "shap", "dependence_bz_regressao.png"))
 
     # ── 4. Waterfall — Caso Extremo ─────────────────────────────────────────
     preds = modelo.predict(X_test)
@@ -181,7 +181,7 @@ def gerar_shap_regressao(artefatos: dict):
     kp_ext = preds[idx_extremo]
     plt.title(f"SHAP Waterfall — Caso Extremo (KP Previsto = {kp_ext:.2f})",
               color=TEXTO, fontsize=11, pad=10)
-    salvar_fig(fig, os.path.join("shap_plots", "waterfall_extremo_regressao.png"))
+    salvar_fig(fig, os.path.join("outputs", "shap", "waterfall_extremo_regressao.png"))
 
     importancia_media = np.abs(shap_values).mean(axis=0)
     return dict(zip(feature_cols, importancia_media))
@@ -225,7 +225,7 @@ def gerar_shap_classificacao(artefatos: dict):
     fig.patch.set_facecolor(FUNDO)
     plt.title("SHAP — Impacto das Features no Nível G (Classificação)",
               color=TEXTO, fontsize=12, pad=15)
-    salvar_fig(fig, os.path.join("shap_plots", "summary_classificacao.png"))
+    salvar_fig(fig, os.path.join("outputs", "shap", "summary_classificacao.png"))
 
     # Bar Plot
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -236,7 +236,7 @@ def gerar_shap_classificacao(artefatos: dict):
     fig.patch.set_facecolor(FUNDO)
     plt.title("SHAP — Importância Média Absoluta (Classificação)",
               color=TEXTO, fontsize=12, pad=15)
-    salvar_fig(fig, os.path.join("shap_plots", "bar_classificacao.png"))
+    salvar_fig(fig, os.path.join("outputs", "shap", "bar_classificacao.png"))
 
     return dict(zip(feature_cols, imp_media))
 
@@ -327,15 +327,15 @@ Referencias:
         "=" * 70,
     ]
 
-    path = os.path.join("outputs", "interpretacao_shap.txt")
+    path = os.path.join("outputs", "shap", "interpretacao_shap.txt")
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(linhas))
     print(f"  + Relatorio salvo: {path}")
 
 
 def main():
-    os.makedirs("shap_plots", exist_ok=True)
-    os.makedirs("outputs", exist_ok=True)
+    os.makedirs(os.path.join("outputs", "shap"), exist_ok=True)
+    
 
     print("\n" + "=" * 60)
     print("  GAIE -- Script 4: Interpretabilidade com SHAP")
@@ -365,7 +365,7 @@ def main():
     ]
     print("  Plots gerados em shap_plots/:")
     for f in plots:
-        existe = "OK" if os.path.exists(os.path.join("shap_plots", f)) else "AUSENTE"
+        existe = "OK" if os.path.exists(os.path.join("outputs", "shap", f)) else "AUSENTE"
         print(f"    [{existe}] {f}")
     print("=" * 60)
 
