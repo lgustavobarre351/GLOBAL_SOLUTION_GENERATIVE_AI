@@ -463,6 +463,7 @@ def gerar_forecast_ao_vivo(df_real, modelo_reg, modelo_clf, scaler, feature_cols
     Xs = scaler.transform(df_fc[feature_cols].values)
     df_fc["kp_previsto"]      = np.clip(modelo_reg.predict(Xs), 0, 9).round(3)
     df_fc["nivel_g_previsto"] = [kp_para_nivel_g(k) for k in df_fc["kp_previsto"]]
+    df_fc["nivel_g_label"]    = df_fc["nivel_g_previsto"].map(G_INFO).apply(lambda x: x["label"] if isinstance(x, dict) else "G0 — Calmo")
     df_fc["incerteza"]        = np.minimum(np.arange(len(df_fc))*0.08+0.08, 2.0)
     df_fc["kp_min"]           = np.clip(df_fc["kp_previsto"]-df_fc["incerteza"], 0, 9)
     df_fc["kp_max"]           = np.clip(df_fc["kp_previsto"]+df_fc["incerteza"], 0, 9)
