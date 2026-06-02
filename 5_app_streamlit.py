@@ -482,10 +482,11 @@ def grafico_timeline(df_hist, df_fc):
         fig.add_trace(go.Scatter(x=dh["timestamp"], y=dh["kp_real"], name="KP Real (NOAA)",
                                   mode="lines", line=dict(color="#4fc3f7", width=2),
                                   hovertemplate="<b>Real</b><br>%{x}<br>KP=%{y:.2f}<extra></extra>"))
-    ts_agora = str((df_fc["timestamp"].min() - pd.Timedelta("1h")))
-    fig.add_vline(x=ts_agora, line_dash="dot",
-                  line_color="#666666", line_width=1,
-                  annotation_text="AGORA", annotation_font_color="#888888", annotation_font_size=10)
+    ts_agora = str(df_fc["timestamp"].min() - pd.Timedelta("1h"))
+    fig.add_shape(type="line", x0=ts_agora, x1=ts_agora, y0=0, y1=9.5,
+                  xref="x", yref="y", line=dict(color="#666666", width=1, dash="dot"))
+    fig.add_annotation(x=ts_agora, y=9.2, text="AGORA", showarrow=False,
+                       font=dict(color="#888888", size=10), xref="x", yref="y")
     fig.add_trace(go.Scatter(
         x=pd.concat([df_fc["timestamp"], df_fc["timestamp"][::-1]]),
         y=pd.concat([df_fc["kp_max"], df_fc["kp_min"][::-1]]),
