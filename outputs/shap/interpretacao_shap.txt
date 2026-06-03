@@ -10,56 +10,56 @@ Modelo de Classificacao: XGBoost
 TOP 8 FEATURES -- REGRESSAO (KP Index)
 ----------------------------------------------------------------------
 
-1. NEWELL_COUPLING (SHAP medio: 3.1660)
+1. NEWELL_COUPLING (SHAP medio: 3.2358)
    Acoplamento de Newell (2008): e = v^(4/3) * Bs^(2/3). Taxa de transferência de energia para a magnetosfera.
 
-2. VELOCIDADE_VENTO (SHAP medio: 0.4604)
+2. VELOCIDADE_VENTO (SHAP medio: 0.4497)
    Velocidade do vento solar. Maior velocidade = mais pressão cinética = mais compressão magnetosférica.
 
-3. MES_COS (SHAP medio: 0.2516)
+3. MES_COS (SHAP medio: 0.2482)
    Cosseno do mês. Completude da sazonalidade anual.
 
-4. BZ (SHAP medio: 0.1861)
+4. BZ (SHAP medio: 0.1899)
    Campo Bz — componente sul do IMF. Valores negativos causam reconexão magnética na magnetopausa.
 
-5. HORA_COS (SHAP medio: 0.1083)
+5. HORA_COS (SHAP medio: 0.1093)
    Cosseno da hora. Completude da representação cíclica horária.
 
-6. HORA_SIN (SHAP medio: 0.0976)
+6. HORA_SIN (SHAP medio: 0.0941)
    Seno da hora. Variação diurna do campo geomagnético.
 
-7. BZ_NEGATIVO (SHAP medio: 0.0773)
+7. BZ_NEGATIVO (SHAP medio: 0.0785)
    Bz Sul — max(-Bz,0). Quantifica diretamente o potencial de reconexão magnética.
 
-8. CME_BZ_INTERACAO (SHAP medio: 0.0740)
+8. CME_BZ_INTERACAO (SHAP medio: 0.0766)
    CME × Bz sul. Captura a condição mais geoefetiva: CME com campo sul intenso.
 
 ----------------------------------------------------------------------
 TOP 8 FEATURES -- CLASSIFICACAO (Nivel G)
 ----------------------------------------------------------------------
 
-1. NEWELL_COUPLING (SHAP medio: 0.8732)
+1. NEWELL_COUPLING (SHAP medio: 0.8776)
    Acoplamento de Newell (2008): e = v^(4/3) * Bs^(2/3). Taxa de transferência de energia para a magnetosfera.
 
-2. FLARE_CLASSE (SHAP medio: 0.5613)
+2. FLARE_CLASSE (SHAP medio: 0.5629)
    Classe do flare (B/C/M/X). Flares X acompanham partículas energéticas (SEP) e radiação intensa.
 
-3. BZ_NEGATIVO (SHAP medio: 0.4314)
+3. BZ_NEGATIVO (SHAP medio: 0.4305)
    Bz Sul — max(-Bz,0). Quantifica diretamente o potencial de reconexão magnética.
 
-4. PRESSAO_DINAMICA (SHAP medio: 0.3135)
+4. PRESSAO_DINAMICA (SHAP medio: 0.3148)
    Pressão dinâmica P=rv^2/2. Comprime a magnetosfera e reduz o raio de Alfvén.
 
-5. CAMPO_BT (SHAP medio: 0.2707)
+5. CAMPO_BT (SHAP medio: 0.2760)
    Campo magnético total. Indica intensidade geral do IMF. Correlacionado com profundidade do índice Dst.
 
-6. BZ (SHAP medio: 0.2556)
+6. BZ (SHAP medio: 0.2545)
    Campo Bz — componente sul do IMF. Valores negativos causam reconexão magnética na magnetopausa.
 
 7. CME_BZ_INTERACAO (SHAP medio: 0.1911)
    CME × Bz sul. Captura a condição mais geoefetiva: CME com campo sul intenso.
 
-8. VELOCIDADE_VENTO (SHAP medio: 0.1439)
+8. VELOCIDADE_VENTO (SHAP medio: 0.1462)
    Velocidade do vento solar. Maior velocidade = mais pressão cinética = mais compressão magnetosférica.
 
 ----------------------------------------------------------------------
