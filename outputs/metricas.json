@@ -1,0 +1,41 @@
+{
+  "regressao": [
+    {
+      "modelo": "Random Forest",
+      "RMSE": 0.23793255377009517,
+      "MAE": 0.10344551741392277,
+      "R2": 0.9732117939406789
+    },
+    {
+      "modelo": "XGBoost",
+      "RMSE": 0.2766374212326313,
+      "MAE": 0.17377999620980705,
+      "R2": 0.9637875628842597
+    },
+    {
+      "modelo": "Ridge (baseline)",
+      "RMSE": 0.6268017481632067,
+      "MAE": 0.513086883041777,
+      "R2": 0.8140927626696791
+    }
+  ],
+  "classificacao": [
+    {
+      "modelo": "Random Forest",
+      "Accuracy": 0.9743429286608261,
+      "F1_weighted": 0.9743953371723768
+    },
+    {
+      "modelo": "XGBoost",
+      "Accuracy": 0.9755944931163955,
+      "F1_weighted": 0.9753368737219945
+    },
+    {
+      "modelo": "Logistic Reg. (baseline)",
+      "Accuracy": 0.9762202753441802,
+      "F1_weighted": 0.9759570537006674
+    }
+  ],
+  "melhor_regressao": "Random Forest",
+  "melhor_classificacao": "Logistic Reg. (baseline)"
+}

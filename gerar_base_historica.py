@@ -379,23 +379,35 @@ def main():
         }, f, ensure_ascii=False, indent=2)
     print(f"  ✓ forecast_48h.json ({len(df_fc)} previsões futuras)")
 
-    # Resumo estatístico
-    dist = df_hist["nivel_g_previsto"].value_counts().sort_index()
+    # Resumo estatístico — separando real de sintético (fix #4)
+    dist_real = df_hist["nivel_g_previsto"].value_counts().sort_index()
     path_res = os.path.join("data", "resumo_estatistico.json")
+
+    # aviso explícito se todos os eventos G1+ são sintéticos
+    kp_max_real = float(df_hist["kp_previsto"].max())
+    aviso_sintetico = (
+        "AVISO: período de coleta foi quieto (KP máx real = {:.2f}). "
+        "Eventos G1+ neste resumo são provenientes de dados sintéticos.".format(kp_max_real)
+        if kp_max_real < 5 else None
+    )
+
     with open(path_res, "w", encoding="utf-8") as f:
         json.dump({
             "gerado_em":              datetime.now().isoformat(),
             "modelo_regressao":       nome_reg,
             "modelo_classificacao":   nome_clf,
+            "aviso":                  aviso_sintetico,
             "historico": {
                 "total_registros":    int(len(df_hist)),
                 "periodo_inicio":     str(df_hist["timestamp"].min()),
                 "periodo_fim":        str(df_hist["timestamp"].max()),
+                "fonte":              "NOAA SWPC — Satélite DSCOVR (100% dados reais)",
                 "kp_medio":           round(float(df_hist["kp_previsto"].mean()), 3),
                 "kp_maximo":          round(float(df_hist["kp_previsto"].max()), 3),
-                "distribuicao_G": {
+                "nota_storms":        "Todos os registros neste arquivo são dados reais. Ausência de G1+ indica período quieto — não frequência real de tempestades.",
+                "distribuicao_G_real": {
                     NIVEL_LABELS[int(k)]: {"count": int(v), "percentual": round(v/len(df_hist)*100, 1)}
-                    for k, v in dist.items()
+                    for k, v in dist_real.items()
                 },
             },
             "forecast_48h": {

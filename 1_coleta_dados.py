@@ -79,8 +79,13 @@ def coletar_plasma_noaa() -> pd.DataFrame:
         df["timestamp"] = pd.to_datetime(df["time_tag"])
         for col in ["densidade_protons", "velocidade_vento", "temperatura"]:
             df[col] = pd.to_numeric(df[col], errors="coerce")
+
+        # NOAA fornece temperatura em Kelvin — converter para eV (1 eV = 11604.5 K)
+        # Típico vento solar: 50.000–300.000 K → 4–26 eV
+        df["temperatura"] = df["temperatura"] / 11604.5
+
         df = df[["timestamp", "velocidade_vento", "densidade_protons", "temperatura"]].dropna()
-        print(f"  ✓ Plasma: {len(df):,} registros")
+        print(f"  ✓ Plasma: {len(df):,} registros | temperatura convertida K→eV")
         return df
     except Exception as e:
         print(f"  ✗ Erro Plasma NOAA: {e}")

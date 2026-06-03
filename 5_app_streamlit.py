@@ -263,8 +263,9 @@ def engenharia_features_usuario(inputs: dict, feature_cols: list) -> np.ndarray:
         "mes_cos":             np.cos(2 * np.pi * mes / 12),
         "bz_media_3h":         inputs.get("bz_media_3h", bz),
         "velocidade_media_3h": inputs.get("vel_media_3h", v),
-        "bz_media_6h":         inputs.get("bz_media_3h", bz),
-        "velocidade_media_6h": inputs.get("vel_media_3h", v),
+        # 6h usa chave própria; fallback para 3h se não informado — fix #7
+        "bz_media_6h":         inputs.get("bz_media_6h", inputs.get("bz_media_3h", bz)),
+        "velocidade_media_6h": inputs.get("vel_media_6h", inputs.get("vel_media_3h", v)),
     }
     return np.array([row[c] for c in feature_cols]).reshape(1, -1)
 
@@ -388,6 +389,8 @@ def buscar_dados_ao_vivo():
         df_pl["timestamp"] = pd.to_datetime(df_pl["time_tag"])
         for c in ["densidade_protons","velocidade_vento","temperatura"]:
             df_pl[c] = pd.to_numeric(df_pl[c], errors="coerce")
+        # NOAA dá temperatura em Kelvin — converter para eV (1 eV = 11604.5 K)
+        df_pl["temperatura"] = df_pl["temperatura"] / 11604.5
         df_pl = df_pl[["timestamp","velocidade_vento","densidade_protons","temperatura"]].dropna()
 
         r3 = requests.get("https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json", timeout=10)
@@ -612,8 +615,10 @@ def main():
     X_raw    = engenharia_features_usuario(inputs, feature_cols)
     X_scaled = scaler.transform(X_raw)
     kp_pred  = float(np.clip(modelo_reg.predict(X_scaled)[0], 0, 9))
-    g_pred   = int(modelo_clf.predict(X_scaled)[0])
+    # nivel_g derivado do KP (consistência regressor→classificação) — fix #5
+    g_pred   = kp_para_nivel_g(kp_pred)
     g_info   = G_INFO.get(g_pred, G_INFO[0])
+    # Probabilidades do classificador (apenas para o gráfico de barras)
     proba    = modelo_clf.predict_proba(X_scaled)[0] if hasattr(modelo_clf, "predict_proba") else np.zeros(6)
 
     # ── ABAS ────────────────────────────────────────────────────────
@@ -644,7 +649,7 @@ def main():
             X_atual  = engenharia_features_usuario(inputs_atuais, feature_cols)
             X_atual_s = scaler.transform(X_atual)
             kp_atual = float(np.clip(modelo_reg.predict(X_atual_s)[0], 0, 9))
-            g_atual  = int(modelo_clf.predict(X_atual_s)[0])
+            g_atual  = kp_para_nivel_g(kp_atual)  # derivado do KP — fix #5
             g_atual_info = G_INFO.get(g_atual, G_INFO[0])
 
             # Forecast 48h
