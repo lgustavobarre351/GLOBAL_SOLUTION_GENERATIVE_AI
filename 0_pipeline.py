@@ -95,20 +95,22 @@ def verificar_artefatos():
             ("models/best_regressor.pkl",     "Melhor modelo de regressão"),
             ("models/best_classifier.pkl",    "Melhor modelo de classificação"),
         ],
-        "Outputs": [
-            ("outputs/eda_solar.png",              "Análise exploratória (EDA)"),
-            ("outputs/comparacao_regressao.png",   "Comparação modelos regressão"),
-            ("outputs/comparacao_classificacao.png","Comparação modelos classificação"),
-            ("outputs/metricas.json",              "Métricas completas JSON"),
-            ("outputs/interpretacao_shap.txt",     "Relatório SHAP textual"),
+        "Outputs — EDA": [
+            ("outputs/eda/eda_solar.png",                       "Análise exploratória (EDA)"),
         ],
-        "SHAP Plots": [
-            ("shap_plots/summary_regressao.png",          "Summary plot regressão"),
-            ("shap_plots/bar_regressao.png",               "Bar plot regressão"),
-            ("shap_plots/dependence_bz_regressao.png",     "Dependence plot Bz"),
-            ("shap_plots/waterfall_extremo_regressao.png", "Waterfall caso extremo"),
-            ("shap_plots/summary_classificacao.png",       "Summary plot classificação"),
-            ("shap_plots/bar_classificacao.png",           "Bar plot classificação"),
+        "Outputs — Modelos": [
+            ("outputs/modelos/comparacao_regressao.png",        "Comparação modelos regressão"),
+            ("outputs/modelos/comparacao_classificacao.png",    "Comparação modelos classificação"),
+            ("outputs/modelos/metricas.json",                   "Métricas completas JSON"),
+        ],
+        "Outputs — SHAP": [
+            ("outputs/shap/summary_regressao.png",              "Summary plot regressão"),
+            ("outputs/shap/bar_regressao.png",                  "Bar plot regressão"),
+            ("outputs/shap/dependence_bz_regressao.png",        "Dependence plot Bz"),
+            ("outputs/shap/waterfall_extremo_regressao.png",    "Waterfall caso extremo"),
+            ("outputs/shap/summary_classificacao.png",          "Summary plot classificação"),
+            ("outputs/shap/bar_classificacao.png",              "Bar plot classificação"),
+            ("outputs/shap/interpretacao_shap.txt",             "Relatório SHAP textual"),
         ],
     }
 
