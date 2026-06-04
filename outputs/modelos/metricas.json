@@ -2,40 +2,40 @@
   "regressao": [
     {
       "modelo": "Random Forest",
-      "RMSE": 0.25200568659785744,
-      "MAE": 0.11527845716064943,
-      "R2": 0.9705600937207858
+      "RMSE": 0.569376048364025,
+      "MAE": 0.44683529456249327,
+      "R2": 0.9653742714370434
     },
     {
       "modelo": "XGBoost",
-      "RMSE": 0.2803292148379101,
-      "MAE": 0.1753748461555507,
-      "R2": 0.9635705627411266
+      "RMSE": 0.564621786872113,
+      "MAE": 0.4419479106002384,
+      "R2": 0.9659501034728231
     },
     {
       "modelo": "Ridge (baseline)",
-      "RMSE": 0.6467565696632688,
-      "MAE": 0.5214926223184128,
-      "R2": 0.8060912355469406
+      "RMSE": 0.5802659314264876,
+      "MAE": 0.4672353198986931,
+      "R2": 0.9640371022437637
     }
   ],
   "classificacao": [
     {
       "modelo": "Random Forest",
-      "Accuracy": 0.9786700125470514,
-      "F1_weighted": 0.9790313303909064
+      "Accuracy": 0.8266666666666667,
+      "F1_weighted": 0.8281124214793837
     },
     {
       "modelo": "XGBoost",
-      "Accuracy": 0.9799247176913425,
-      "F1_weighted": 0.9800048352047355
+      "Accuracy": 0.8288888888888889,
+      "F1_weighted": 0.827640251472702
     },
     {
       "modelo": "Logistic Reg. (baseline)",
-      "Accuracy": 0.9780426599749059,
-      "F1_weighted": 0.9789894368992891
+      "Accuracy": 0.8444444444444444,
+      "F1_weighted": 0.8467009618621127
     }
   ],
-  "melhor_regressao": "Random Forest",
-  "melhor_classificacao": "XGBoost"
+  "melhor_regressao": "XGBoost",
+  "melhor_classificacao": "Logistic Reg. (baseline)"
 }

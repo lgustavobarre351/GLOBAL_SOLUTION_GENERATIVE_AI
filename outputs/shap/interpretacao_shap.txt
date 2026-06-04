@@ -3,64 +3,64 @@ GAIE -- Relatorio de Interpretabilidade SHAP
 Analise Fisica das Variaveis Mais Influentes
 ======================================================================
 
-Modelo de Regressao: Random Forest
-Modelo de Classificacao: XGBoost
+Modelo de Regressao: XGBoost
+Modelo de Classificacao: Logistic Reg. (baseline)
 
 ----------------------------------------------------------------------
 TOP 8 FEATURES -- REGRESSAO (KP Index)
 ----------------------------------------------------------------------
 
-1. NEWELL_COUPLING (SHAP medio: 3.2358)
+1. NEWELL_COUPLING (SHAP medio: 2.3115)
    Acoplamento de Newell (2008): e = v^(4/3) * Bs^(2/3). Taxa de transferência de energia para a magnetosfera.
 
-2. VELOCIDADE_VENTO (SHAP medio: 0.4497)
-   Velocidade do vento solar. Maior velocidade = mais pressão cinética = mais compressão magnetosférica.
-
-3. MES_COS (SHAP medio: 0.2482)
-   Cosseno do mês. Completude da sazonalidade anual.
-
-4. BZ (SHAP medio: 0.1899)
-   Campo Bz — componente sul do IMF. Valores negativos causam reconexão magnética na magnetopausa.
-
-5. HORA_COS (SHAP medio: 0.1093)
-   Cosseno da hora. Completude da representação cíclica horária.
-
-6. HORA_SIN (SHAP medio: 0.0941)
-   Seno da hora. Variação diurna do campo geomagnético.
-
-7. BZ_NEGATIVO (SHAP medio: 0.0785)
+2. BZ_NEGATIVO (SHAP medio: 0.3785)
    Bz Sul — max(-Bz,0). Quantifica diretamente o potencial de reconexão magnética.
 
-8. CME_BZ_INTERACAO (SHAP medio: 0.0766)
-   CME × Bz sul. Captura a condição mais geoefetiva: CME com campo sul intenso.
+3. BZ (SHAP medio: 0.3747)
+   Campo Bz — componente sul do IMF. Valores negativos causam reconexão magnética na magnetopausa.
+
+4. VELOCIDADE_VENTO (SHAP medio: 0.3381)
+   Velocidade do vento solar. Maior velocidade = mais pressão cinética = mais compressão magnetosférica.
+
+5. FLARE_CLASSE (SHAP medio: 0.3245)
+   Classe do flare (B/C/M/X). Flares X acompanham partículas energéticas (SEP) e radiação intensa.
+
+6. CAMPO_BT (SHAP medio: 0.1720)
+   Campo magnético total. Indica intensidade geral do IMF. Correlacionado com profundidade do índice Dst.
+
+7. TEMPERATURA (SHAP medio: 0.1380)
+   Temperatura do vento solar (eV). Indicador indireto da termalização do plasma.
+
+8. PRESSAO_DINAMICA (SHAP medio: 0.1195)
+   Pressão dinâmica P=rv^2/2. Comprime a magnetosfera e reduz o raio de Alfvén.
 
 ----------------------------------------------------------------------
 TOP 8 FEATURES -- CLASSIFICACAO (Nivel G)
 ----------------------------------------------------------------------
 
-1. NEWELL_COUPLING (SHAP medio: 0.8776)
-   Acoplamento de Newell (2008): e = v^(4/3) * Bs^(2/3). Taxa de transferência de energia para a magnetosfera.
-
-2. FLARE_CLASSE (SHAP medio: 0.5629)
+1. FLARE_CLASSE (SHAP medio: 1.3613)
    Classe do flare (B/C/M/X). Flares X acompanham partículas energéticas (SEP) e radiação intensa.
 
-3. BZ_NEGATIVO (SHAP medio: 0.4305)
-   Bz Sul — max(-Bz,0). Quantifica diretamente o potencial de reconexão magnética.
-
-4. PRESSAO_DINAMICA (SHAP medio: 0.3148)
-   Pressão dinâmica P=rv^2/2. Comprime a magnetosfera e reduz o raio de Alfvén.
-
-5. CAMPO_BT (SHAP medio: 0.2760)
+2. CAMPO_BT (SHAP medio: 1.2894)
    Campo magnético total. Indica intensidade geral do IMF. Correlacionado com profundidade do índice Dst.
 
-6. BZ (SHAP medio: 0.2545)
-   Campo Bz — componente sul do IMF. Valores negativos causam reconexão magnética na magnetopausa.
+3. BZ_NEGATIVO (SHAP medio: 1.2124)
+   Bz Sul — max(-Bz,0). Quantifica diretamente o potencial de reconexão magnética.
 
-7. CME_BZ_INTERACAO (SHAP medio: 0.1911)
+4. NEWELL_COUPLING (SHAP medio: 1.1781)
+   Acoplamento de Newell (2008): e = v^(4/3) * Bs^(2/3). Taxa de transferência de energia para a magnetosfera.
+
+5. CME_BZ_INTERACAO (SHAP medio: 1.0515)
    CME × Bz sul. Captura a condição mais geoefetiva: CME com campo sul intenso.
 
-8. VELOCIDADE_VENTO (SHAP medio: 0.1462)
+6. BZ (SHAP medio: 1.0166)
+   Campo Bz — componente sul do IMF. Valores negativos causam reconexão magnética na magnetopausa.
+
+7. VELOCIDADE_VENTO (SHAP medio: 0.7820)
    Velocidade do vento solar. Maior velocidade = mais pressão cinética = mais compressão magnetosférica.
+
+8. PRESSAO_DINAMICA (SHAP medio: 0.2033)
+   Pressão dinâmica P=rv^2/2. Comprime a magnetosfera e reduz o raio de Alfvén.
 
 ----------------------------------------------------------------------
 CONCLUSOES FISICAS
