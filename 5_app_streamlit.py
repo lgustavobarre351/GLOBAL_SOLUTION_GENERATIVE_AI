@@ -30,7 +30,7 @@ st.set_page_config(
 
 # ── Equipe ───────────────────────────────────────────────────────────────────
 EQUIPE = [
-    ("Julia Azevedo Lins",           "RM99690"),
+    ("Julia Azevedo Lins",           "RM98690"),
     ("Luis Gustavo Barreto Garrido", "RM99210"),
     ("Victor Hugo Aranda Forte",     "RM99667"),
     ("Guilherme Akio",               "RM98582"),
