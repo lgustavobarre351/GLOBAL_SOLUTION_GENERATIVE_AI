@@ -1,13 +1,48 @@
-# 🌌 GAIE — Geomagnetic AI Engine
+# 🌌 HELIOS — Space Intelligence Platform
 
-> **Pipeline completo de ML para previsão de tempestades geomagnéticas aplicado à Economia Espacial**
-> Camada preditiva integrada ao [HELIOS Space Intelligence Platform](https://helius-zeta.vercel.app/)
+> **Plataforma web de monitoramento de clima espacial em tempo real, integrada a satélites governamentais da NASA e NOAA**
+> Global Solution 2026/1 · FIAP · Generative AI for Engineering · Turma 4ESPY
 
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-App-red.svg)](https://globalsolutiongenerativeai-gkw5rmitemjc8d7ue7mvub.streamlit.app)
-[![XGBoost](https://img.shields.io/badge/XGBoost-R²_0.97-orange.svg)](#)
-[![SHAP](https://img.shields.io/badge/SHAP-TreeExplainer-green.svg)](#)
-[![FIAP](https://img.shields.io/badge/FIAP-Global%20Solution%202026-E85A1E.svg)](#)
+[![HELIOS](https://img.shields.io/badge/HELIOS-Space%20Intelligence-E85A1E.svg)](https://helius-zeta.vercel.app/)
+[![FIAP](https://img.shields.io/badge/FIAP-Global%20Solution%202026-1B3A6B.svg)](#)
+
+---
+
+## 🚀 O que é o HELIOS
+
+O **HELIOS** é uma plataforma web de monitoramento de clima espacial em tempo real. Ela integra dados de satélites governamentais da NASA e NOAA e os apresenta em uma interface de dashboard modular, cobrindo cinco frentes:
+
+| Módulo | O que faz |
+|--------|-----------|
+| 🛸 **Agenda de Lançamentos** | Acompanhamento de lançamentos orbitais em tempo real |
+| ☀️ **Eventos Solares** | Monitoramento de flares, CMEs e tempestades geomagnéticas via NASA DONKI |
+| 🛰️ **Rastreamento de Satélites** | Posição de satélites em órbita em tempo real |
+| 🤖 **Previsão por IA** | Forecast de clima espacial por Machine Learning — **componente GAIE** |
+| ⚡ **Energia Solar** | Otimização de potencial fotovoltaico por região no território brasileiro |
+
+A proposta do projeto é tornar acessível o que antes exigia sistemas técnicos especializados — condições do vento solar, alertas de flares, posição de satélites, potencial fotovoltaico por região — reunindo tudo em uma única interface, com dados atualizados automaticamente e sem necessidade de conhecimento técnico prévio para interpretar os resultados.
+
+🔗 **Plataforma HELIOS:** https://helius-zeta.vercel.app/
+
+---
+
+## 🤖 GAIE — O Componente de IA do HELIOS
+
+O **GAIE (Geomagnetic AI Engine)** é a camada preditiva de Machine Learning do HELIOS. Enquanto os demais módulos da plataforma monitoram e exibem o que está acontecendo agora, o GAIE adiciona a capacidade de **prever o que vai acontecer nas próximas horas** — transformando o HELIOS de um sistema reativo em um sistema preditivo.
+
+Especificamente, o GAIE resolve o problema de previsão de **tempestades geomagnéticas**: dado o estado atual do vento solar (medido pelo satélite DSCOVR no ponto L1, a 1,5 milhão de km da Terra), qual será a intensidade da perturbação geomagnética nos próximos momentos? A resposta é dada em duas formas complementares: o **KP Index** (valor contínuo 0–9) e o **Nível G** (classificação G0–G5 da escala oficial NOAA).
+
+```
+HELIOS Platform
+├── Lançamentos Orbitais
+├── Eventos Solares (NASA DONKI)
+├── Rastreamento de Satélites
+├── Energia Solar Brasil
+└── 🤖 GAIE — Previsão por IA  ← este repositório
+    ├── Monitoramento ao vivo (dados reais NOAA)
+    ├── Forecast 48h com bandas de incerteza
+    └── Simulação manual de cenários
+```
 
 ---
 
@@ -15,8 +50,14 @@
 
 | | Link |
 |---|---|
-| 📁 **Repositório GitHub** | https://github.com/lgustavobarre351/GLOBAL_SOLUTION_GENERATIVE_AI |
-| 🚀 **Aplicação em funcionamento** | https://globalsolutiongenerativeai-gkw5rmitemjc8d7ue7mvub.streamlit.app |
+| 📁 **Repositório GitHub (GAIE)** | https://github.com/lgustavobarre351/GLOBAL_SOLUTION_GENERATIVE_AI |
+| 🤖 **Aplicação GAIE (Streamlit)** | https://globalsolutiongenerativeai-gkw5rmitemjc8d7ue7mvub.streamlit.app |
+| 🌌 **Plataforma HELIOS** | https://helius-zeta.vercel.app/ |
+
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-App-red.svg)](https://globalsolutiongenerativeai-gkw5rmitemjc8d7ue7mvub.streamlit.app)
+[![XGBoost](https://img.shields.io/badge/XGBoost-R²_0.97-orange.svg)](#)
+[![SHAP](https://img.shields.io/badge/SHAP-TreeExplainer-green.svg)](#)
 
 ---
 
@@ -26,7 +67,7 @@
 
 | Nome | RM |
 |------|----|
-| Julia Azevedo Lins | RM99690 |
+| Julia Azevedo Lins | RM98690 |
 | Luis Gustavo Barreto Garrido | RM99210 |
 | Victor Hugo Aranda Forte | RM99667 |
 | Guilherme Akio | RM98582 |
